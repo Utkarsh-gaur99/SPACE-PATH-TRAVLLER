@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Mission - AstroPath</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="stars-bg" id="stars-container"></div>
+    
+    <nav>
+        <a href="/" class="brand">AstroPath</a>
+        <ul id="nav-links">
+            <li><a href="/dashboard.html">Dashboard</a></li>
+            <li><a href="/new_mission.html" style="color: var(--accent-neon);">New Mission</a></li>
+            <li><a href="/missions.html">History</a></li>
+            <li><a href="/planets.html">Planets</a></li>
+            <li><a href="#" onclick="logoutUser()">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h2 class="text-center mb-2">Plan Interplanetary Journey</h2>
+        
+        <div class="glass-card" style="max-width: 600px; margin: 0 auto;">
+            <form id="mission-form">
+                <div class="form-group">
+                    <label for="source">Source Planet</label>
+                    <select id="source" required>
+                        <option value="Earth">Earth</option>
+                        <option value="Moon">Moon</option>
+                        <option value="Mars">Mars</option>
+                        <option value="Venus">Venus</option>
+                        <option value="Jupiter">Jupiter</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="destination">Destination Planet</label>
+                    <select id="destination" required>
+                        <option value="Mars">Mars</option>
+                        <option value="Earth">Earth</option>
+                        <option value="Moon">Moon</option>
+                        <option value="Venus">Venus</option>
+                        <option value="Jupiter">Jupiter</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="speed">Spacecraft Speed (km/h)</label>
+                    <input type="number" id="speed" min="1" value="28000" required>
+                </div>
+                
+                <div class="rocket-loader" id="loader">🚀</div>
+                
+                <button type="submit" class="btn-neon" style="width: 100%; margin-top: 1rem;" id="calc-btn">Calculate Trajectory</button>
+            </form>
+            
+            <div id="results" style="display: none; margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
+                <h3 class="text-center" style="color: var(--accent-blue);">Mission Intel</h3>
+                <p><strong>Distance:</strong> <span id="res-dist"></span> km</p>
+                <p><strong>Estimated Travel Time:</strong></p>
+                <ul>
+                    <li><span id="res-hours"></span> Hours</li>
+                    <li><span id="res-days"></span> Days</li>
+                    <li><span id="res-years"></span> Years</li>
+                </ul>
+                <button class="btn-neon" style="width: 100%; margin-top: 1rem; border-color: #f1c40f; color: #f1c40f;" id="save-btn">Save Mission</button>
+                <div id="save-msg" class="success-msg text-center"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/ui.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            generateStars(100);
+            requireAuth();
+            
+            let lastCalculatedMission = null;
+
+            document.getElementById('mission-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const src = document.getElementById('source').value;
+                const dest = document.getElementById('destination').value;
+                const spd = parseFloat(document.getElementById('speed').value);
+                
+                const btn = document.getElementById('calc-btn');
+                const loader = document.getElementById('loader');
+                const results = document.getElementById('results');
+                
+                btn.style.display = 'none';
+                loader.style.display = 'block';
+                results.style.display = 'none';
+                
+                // Simulate calculation delay for effect
+                setTimeout(async () => {
+                    const data = await calculateMission(src, dest, spd);
+                    
+                    loader.style.display = 'none';
+                    btn.style.display = 'block';
+                    
+                    if(data) {
+                        lastCalculatedMission = data;
+                        document.getElementById('res-dist').textContent = data.distance.toLocaleString();
+                        document.getElementById('res-hours').textContent = data.travel_time_hours.toLocaleString();
+                        document.getElementById('res-days').textContent = data.travel_time_days.toLocaleString();
+                        document.getElementById('res-years').textContent = data.travel_time_years.toLocaleString();
+                        results.style.display = 'block';
+                        document.getElementById('save-msg').style.display = 'none';
+                        document.getElementById('save-btn').style.display = 'block';
+                    } else {
+                        alert("Error calculating mission. Check planets.");
+                    }
+                }, 1500);
+            });
+            
+            document.getElementById('save-btn').addEventListener('click', async () => {
+                if(!lastCalculatedMission) return;
+                const res = await saveMission(lastCalculatedMission);
+                if(res) {
+                    document.getElementById('save-btn').style.display = 'none';
+                    const msg = document.getElementById('save-msg');
+                    msg.textContent = "Mission saved to History!";
+                    msg.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

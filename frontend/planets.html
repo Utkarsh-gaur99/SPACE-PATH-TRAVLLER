@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planets - AstroPath</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="stars-bg" id="stars-container"></div>
+    
+    <nav>
+        <a href="/" class="brand">AstroPath</a>
+        <ul id="nav-links">
+            <li><a href="/dashboard.html">Dashboard</a></li>
+            <li><a href="/new_mission.html">New Mission</a></li>
+            <li><a href="/missions.html">History</a></li>
+            <li><a href="/planets.html" style="color: var(--accent-neon);">Planets</a></li>
+            <li><a href="#" onclick="logoutUser()">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h2 class="text-center mb-2">Celestial Database</h2>
+        
+        <div id="planets-container" class="grid grid-3">
+            <!-- Planets will be loaded here -->
+        </div>
+    </div>
+
+    <script src="/js/ui.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            generateStars(100);
+            requireAuth();
+            
+            const container = document.getElementById('planets-container');
+            const planets = await getPlanets();
+            
+            if(planets) {
+                planets.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'glass-card';
+                    card.innerHTML = `
+                        <h3 class="text-center" style="color: var(--accent-neon); margin-bottom: 15px; font-size: 1.8rem;">${p.name}</h3>
+                        <p><strong>Gravity:</strong> ${p.gravity}</p>
+                        <p><strong>Temp:</strong> ${p.temperature}</p>
+                        <p><strong>Dist. from Sun:</strong> ${p.distance_from_sun}</p>
+                        <p class="mt-2" style="font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">${p.description}</p>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

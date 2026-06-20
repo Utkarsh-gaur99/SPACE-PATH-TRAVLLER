@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - AstroPath</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="stars-bg" id="stars-container"></div>
+    
+    <nav>
+        <a href="/" class="brand">AstroPath</a>
+        <ul id="nav-links">
+            <li><a href="/login.html">Login</a></li>
+        </ul>
+    </nav>
+
+    <div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
+        <div class="glass-card" style="width: 100%; max-width: 400px;">
+            <h2 class="text-center mb-2">Enlist Pilot</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="username">Callsign (Username)</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Comm Link (Email)</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Access Code (Password)</label>
+                    <input type="password" id="password" required minlength="6">
+                </div>
+                <button type="submit" class="btn-neon" style="width: 100%; margin-top: 1rem;">Register</button>
+                <div id="register-error" class="error-msg text-center"></div>
+                <div id="register-success" class="success-msg text-center">Registration successful! Redirecting...</div>
+            </form>
+            <p class="text-center mt-2" style="font-size: 0.9rem;">Already enlisted? <a href="/login.html" style="color: var(--accent-neon);">Login here</a></p>
+        </div>
+    </div>
+
+    <script src="/js/ui.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            generateStars(50);
+            if(isAuthenticated()) {
+                window.location.href = '/dashboard.html';
+            }
+            
+            document.getElementById('register-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const u = document.getElementById('username').value;
+                const em = document.getElementById('email').value;
+                const p = document.getElementById('password').value;
+                const errDiv = document.getElementById('register-error');
+                const sucDiv = document.getElementById('register-success');
+                
+                errDiv.style.display = 'none';
+                
+                const res = await registerUser(u, em, p);
+                if(res.success) {
+                    sucDiv.style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = '/login.html';
+                    }, 1500);
+                } else {
+                    errDiv.textContent = res.message || 'Registration failed.';
+                    errDiv.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

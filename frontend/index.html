@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroPath - Space Mission Planner</title>
+    <meta name="description" content="Plan your next interplanetary journey with AstroPath. Calculate travel times and explore the solar system.">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="stars-bg" id="stars-container"></div>
+    
+    <nav>
+        <a href="/" class="brand">AstroPath</a>
+        <ul id="nav-links">
+            <li><a href="/login.html">Login</a></li>
+            <li><a href="/register.html">Register</a></li>
+        </ul>
+    </nav>
+
+    <div class="container text-center" style="display: flex; flex-direction: column; justify-content: center; min-height: 80vh;">
+        <h1 style="font-size: 4rem; margin-bottom: 1rem; text-shadow: 0 0 20px var(--accent-neon);">AstroPath</h1>
+        <h2 style="font-size: 1.5rem; color: var(--accent-blue); margin-bottom: 3rem;">Space Mission Planner</h2>
+        
+        <div style="margin-bottom: 4rem;">
+            <a href="/register.html" class="btn-neon" style="margin: 0 10px;">Get Started</a>
+            <a href="/login.html" class="btn-neon" style="margin: 0 10px;">Login</a>
+        </div>
+
+        <div class="grid grid-3">
+            <div class="glass-card">
+                <h3>Space Travel Calculator</h3>
+                <p class="mt-2">Calculate exact travel times between planets based on your spacecraft's speed.</p>
+            </div>
+            <div class="glass-card">
+                <h3>Mission History</h3>
+                <p class="mt-2">Keep track of all your planned interstellar journeys and review past missions.</p>
+            </div>
+            <div class="glass-card">
+                <h3>Planet Explorer</h3>
+                <p class="mt-2">Discover details about different celestial bodies in our solar system.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/ui.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            generateStars(100);
+            updateNavForAuth();
+        });
+    </script>
+</body>
+</html>
